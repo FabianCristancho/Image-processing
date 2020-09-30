@@ -1,0 +1,22 @@
+{
+  "name": "serverImage",
+  "version": "1.0.0",
+  "description": "",
+  "main": "serverImage.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.0.20",
+    "ffmpeg-extract-frames": "^2.0.2",
+    "fluent-ffmpeg": "^2.1.2",
+    "fs": "0.0.1-security",
+    "get-video-duration": "^3.0.2",
+    "jimp": "^0.16.1",
+    "nodemailer": "^6.4.11",
+    "pdfkit": "^0.11.0"
+  }
+}
