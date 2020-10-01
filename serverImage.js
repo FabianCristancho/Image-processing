@@ -24,15 +24,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
 
-//statics files
-app.use(express.static(path.join(__dirname, 'public')));
 
-const storage = multer.diskStorage({
+const storage = null;
+
+/*multer.diskStorage({
 	destination: path.join(__dirname, 'public/uploads'),
 	filename(req, file, cb) {
 		cb(null, new Date().getTime() + path.extname(file.originalname));
 	}
-});
+});*/
 
 app.use(multer({ storage }).single('video'));
 
