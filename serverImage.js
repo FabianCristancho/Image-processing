@@ -1,9 +1,65 @@
+const express = require('express')
+const app = express()
+const port = process.argv[2];
+const ipMiddleware = process.argv[3];
+const morgan = require('morgan');
+const cors = require('cors');
+const multer = require('multer');
+const path = require('path');
+const amqp = require('amqplib');
+const nameQueue = 'videos';
+
 var Jimp = require('jimp');
 const pdf = require('./pdf');
 const extractImage = require('./extractImage');
 const numFrames = 5;
 
 var reportImages = [];
+
+app.use(morgan('dev'));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(cors());
+
+//statics files
+app.use(express.static(path.join(__dirname,'public')));
+
+const storage = multer.diskStorage({
+  destination: path.join(__dirname,'public/uploads'),
+  filename(req,file,cb){
+      cb(null,new Date().getTime() + path.extname(file.originalname));
+  }   
+});
+
+app.use(multer({storage}).single('video'));
+
+
+async function subscriber(){
+	console.log(ipMiddleware)
+	const connection = await amqp.connect(`amqp://${ipMiddleware}`)
+	const channel = await connection.createChannel();
+  
+	await channel.assertQueue(nameQueue);
+  
+	channel.consume(nameQueue, message => {
+		const content = JSON.parse(message.content.toString())
+
+		console.log(`received message from "${nameQueue}" queue`)
+		console.log(content)
+	})
+  }
+  
+  subscriber().catch(error => {
+	console.error(error)
+	process.exit(1)
+  })
+
+  /
+  app.listen(port, () => {
+	console.log(`Example app listening at http://localhost:${port}`)
+  })
+
+  //============== METHODS ======================
 
 function getColorPixels(inputImage) {
 	return new Promise((resolve, reject) => {
